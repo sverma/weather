@@ -6,10 +6,10 @@ import (
 )
 
 const (
-	RouteWeather  = "/weather"
-	RouteMetrics  = "/metrics"
-	RouteHealth   = "/health"
-	RouteReady    = "/ready"
+	RouteWeather = "/weather"
+	RouteMetrics = "/metrics"
+	RouteHealth  = "/health"
+	RouteReady   = "/ready"
 )
 
 type statusRecorder struct {

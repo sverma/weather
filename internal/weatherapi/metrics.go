@@ -9,6 +9,6 @@ type MetricsRecorder interface {
 
 type noopMetricsRecorder struct{}
 
-func (noopMetricsRecorder) RecordTimezoneLookupError(string) {}
-func (noopMetricsRecorder) RecordProviderRequest(string)     {}
+func (noopMetricsRecorder) RecordTimezoneLookupError(string)   {}
+func (noopMetricsRecorder) RecordProviderRequest(string)       {}
 func (noopMetricsRecorder) RecordProviderError(string, string) {}
