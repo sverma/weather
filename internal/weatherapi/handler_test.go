@@ -1,6 +1,7 @@
 package weatherapi
 
 import (
+	"context"
 	"encoding/json"
 	"net/http"
 	"net/http/httptest"
@@ -90,11 +91,11 @@ func TestWeatherWithAt(t *testing.T) {
 
 func TestStubProviderDeterministic(t *testing.T) {
 	p := StubProvider{}
-	a, err := p.Lookup(nil, "Asia/Tokyo", testInstant)
+	a, err := p.Lookup(context.TODO(), "Asia/Tokyo", testInstant)
 	if err != nil {
 		t.Fatal(err)
 	}
-	b, err := p.Lookup(nil, "Asia/Tokyo", testInstant)
+	b, err := p.Lookup(context.TODO(), "Asia/Tokyo", testInstant)
 	if err != nil {
 		t.Fatal(err)
 	}
