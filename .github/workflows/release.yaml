@@ -1,0 +1,50 @@
+name: release
+
+# Thin service wrapper. Shared release logic lives in:
+# sverma/platform-workflows/.github/workflows/reusable-release.yaml
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "cmd/**"
+      - "internal/**"
+      - "go.mod"
+      - "go.sum"
+      - "Dockerfile"
+      - ".dockerignore"
+
+permissions:
+  contents: read
+  id-token: write
+  attestations: write
+  security-events: write
+
+jobs:
+  release:
+    name: release
+    uses: sverma/platform-workflows/.github/workflows/reusable-release.yaml@v1.2.0
+    permissions:
+      contents: read
+      id-token: write
+      attestations: write
+      security-events: write
+    with:
+      service-name: weatherserver
+      image-name: weatherserver
+      container-name: weatherserver
+      gitops-app-path: apps/weatherserver
+      staging-overlay: stage
+      staging-environment: staging
+      go-version: "1.24"
+      coverage-threshold: 60
+      build-context: "."
+      dockerfile: Dockerfile
+    secrets:
+      WORKLOAD_IDENTITY_PROVIDER: ${{ secrets.WORKLOAD_IDENTITY_PROVIDER }}
+      GCP_SERVICE_ACCOUNT: ${{ secrets.GCP_SERVICE_ACCOUNT }}
+      GCP_REGION: ${{ secrets.GCP_REGION }}
+      GCP_PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
+      GAR_REPOSITORY: ${{ secrets.GAR_REPOSITORY }}
+      GITOPS_REPO: ${{ secrets.GITOPS_REPO }}
+      GITOPS_PAT: ${{ secrets.GITOPS_PAT }}

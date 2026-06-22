@@ -1,0 +1,38 @@
+name: pr-validation
+
+# Thin service wrapper. Shared CI/build-only logic lives in:
+# sverma/platform-workflows/.github/workflows/
+
+on:
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pr-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  ci-checks:
+    name: ci-checks
+    uses: sverma/platform-workflows/.github/workflows/reusable-ci-checks.yaml@v1.2.0
+    permissions:
+      contents: read
+      security-events: write
+    with:
+      go-version: "1.24"
+      coverage-threshold: 60
+
+  build-only:
+    name: build-only
+    uses: sverma/platform-workflows/.github/workflows/reusable-build-sign.yaml@v1.2.0
+    permissions:
+      contents: read
+      id-token: write
+      attestations: write
+    with:
+      push: false
+      image-name: weatherserver
+      image-tag: pr-${{ github.event.pull_request.number }}
