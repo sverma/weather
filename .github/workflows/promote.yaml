@@ -1,0 +1,45 @@
+name: promote-production
+
+# Thin service wrapper. Shared promotion logic lives in:
+# sverma/platform-workflows/.github/workflows/reusable-promote.yaml
+
+on:
+  workflow_dispatch:
+    inputs:
+      image_tag:
+        description: Image tag to promote (e.g. v0.0.0-abc1234)
+        required: true
+        type: string
+      image_digest:
+        description: Image digest of the staged image (sha256:...)
+        required: true
+        type: string
+
+permissions:
+  contents: read
+  id-token: write
+  attestations: read
+
+jobs:
+  promote:
+    name: promote
+    uses: sverma/platform-workflows/.github/workflows/reusable-promote.yaml@v1.2.0
+    permissions:
+      contents: read
+      id-token: write
+      attestations: read
+    with:
+      service-name: weatherserver
+      container-name: weatherserver
+      gitops-app-path: apps/weatherserver
+      staging-overlay: stage
+      production-overlay: prod
+      production-environment: production
+      image-tag: ${{ inputs.image_tag }}
+      image-digest: ${{ inputs.image_digest }}
+    secrets:
+      WORKLOAD_IDENTITY_PROVIDER: ${{ secrets.WORKLOAD_IDENTITY_PROVIDER }}
+      GCP_SERVICE_ACCOUNT: ${{ secrets.GCP_SERVICE_ACCOUNT }}
+      GCP_REGION: ${{ secrets.GCP_REGION }}
+      GITOPS_REPO: ${{ secrets.GITOPS_REPO }}
+      GITOPS_PAT: ${{ secrets.GITOPS_PAT }}
